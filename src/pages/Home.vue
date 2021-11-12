@@ -11,10 +11,6 @@ import axios from 'axios';
 
 export default {
   name: 'Home',
-  data() {
-    return {
-    };
-  },
   methods: {
     openPage(path) {
       this.$router.push(path);

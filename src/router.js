@@ -7,13 +7,13 @@ import Teams from './pages/Teams.vue';
 import NotFound from './pages/NotFound.vue';
 
 export const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-        { path: '/', component: Home },
-        { path: '/drivers', component: Drivers },
-        { path: '/drivers/add', component: Add },
-        { path: '/drivers/edit/:id', component: Edit },
-        { path: '/teams', component: Teams },
-        { path: '/:pathMatch(.*)*', component: NotFound }
-    ]
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: Home },
+    { path: '/drivers', component: Drivers },
+    { path: '/drivers/add', component: Add },
+    { path: '/drivers/edit/:id', component: Edit },
+    { path: '/teams', component: Teams },
+    { path: '/:pathMatch(.*)*', component: NotFound }
+  ]
 });

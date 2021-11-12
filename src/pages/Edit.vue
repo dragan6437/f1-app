@@ -1,22 +1,18 @@
 <template>
   <h1>Edit Driver</h1>
-  <div v-if="success" class="success">Driver edited successfully!</div>
+  <div ref="alert"></div>
   <form @submit.prevent>
     <div class="form-group">
-      <label for="firstname">First Name</label>
-      <input type="text" id="firstname" name="firstname" v-model="driver.firstname" />
+      <input type="text" v-model="driver.firstname" placeholder="First Name" required />
     </div>
     <div class="form-group">
-      <label for="lastname">Last Name</label>
-      <input type="text" id="lastname" name="lastname" v-model="driver.lastname" />
+      <input type="text" v-model="driver.lastname" placeholder="Last Name" required />
     </div>
     <div class="form-group">
-      <label for="firstname">Counrty</label>
-      <input type="text" id="firstname" name="firstname" v-model="driver.country" />
+      <input type="text" v-model="driver.country" placeholder="Counrty" required />
     </div>
     <div class="form-group">
-      <label for="firstname">Team</label>
-      <input type="text" id="firstname" name="firstname" v-model="driver.team" />
+      <input type="text" v-model="driver.team" placeholder="Team" required />
     </div>
     <div class="form-group">
       <button @click="sendForm()" class="add-button">Save</button>
@@ -43,16 +39,32 @@ export default {
   },
   methods: {
     sendForm() {
+      if (!this.hasEmptyFields()) {
+        this.printMessage("Please fill out all the fields.", "error");
+        return;
+      }
       const id = this.$route.params.id;
       const headers = { "Content-Type": "application/json" };
       axios.put(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers/${id}.json`, this.driver,
         { headers })
         .then((res) => {
-          this.success = true;
+          if (res.status == 200) {
+            this.printMessage("Driver edited succesfully.", "success");
+          } else {
+            this.printMessage("Driver edit failed.", "error");
+          }
         })
         .catch((err) => {
           console.log(err.message);
+          this.printMessage("Driver edit failed.", "error");
         });
+    },
+    hasEmptyFields() {
+      return Object.keys(this.driver).length !== 0;
+    },
+    printMessage(message, nameOfClass) {
+      this.$refs.alert.innerHTML = message;
+      this.$refs.alert.className = nameOfClass;
     }
   },
   created() {
@@ -72,16 +84,23 @@ export default {
 h1 {
   text-align: center;
 }
-.success {
-  width: 450px;
+.success,
+.error {
+  width: 400px;
   margin: 10px auto;
   padding: 20px;
-  border-radius: 3px 3px 3px 3px;
+  border-radius: 3px;
+}
+.success {
   color: #270;
   background-color: #dff2bf;
 }
+.error {
+  color: #d8000c;
+  background-color: #ffbaba;
+}
 form {
-  width: 450px;
+  width: 400px;
   border-radius: 5px;
   background-color: #e8fff2;
   padding: 20px;
