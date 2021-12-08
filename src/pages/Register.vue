@@ -1,85 +1,75 @@
 <template>
-  <h1>Add Driver</h1>
+  <h1>Register</h1>
   <div ref="alert"></div>
-  <form @submit.prevent v-if="$store.getters.isLoggedIn">
+  <form @submit.prevent>
     <div class="form-group">
-      <input type="text" v-model="driver.firstname" placeholder="First Name" required />
+      <input type="email" v-model="user.email" placeholder="Email" required />
     </div>
     <div class="form-group">
-      <input type="text" v-model="driver.lastname" placeholder="Last Name" required />
+      <input type="password" v-model="user.password" placeholder="Password" required />
     </div>
     <div class="form-group">
-      <input type="text" v-model="driver.country" placeholder="Counrty" required />
+      <input type="password" v-model="confirmPassword" placeholder="Confirm Password" required />
     </div>
     <div class="form-group">
-      <input type="text" v-model="driver.team" placeholder="Team" required />
-    </div>
-    <div class="form-group">
-      <button @click="sendForm()" class="add-button">Add</button>
-      <button @click="$router.push('/drivers')" class="cancel-button">Cancel</button>
+      <button @click="sendForm()" class="add-button">Register</button>
     </div>
   </form>
-  <h2 v-if="!$store.getters.isLoggedIn">You need to be logged in to add data!</h2>
 </template>
 
 <script>
 import axios from 'axios';
 
 export default {
-  name: 'Add',
+  name: 'Register',
   data() {
     return {
-      driver: {
-        firstname: '',
-        lastname: '',
-        country: '',
-        team: ''
-      }
+      user: {
+        email: '',
+        password: '',
+        returnSecureToken: true
+      },
+      confirmPassword: ''
     };
   },
   methods: {
     sendForm() {
-      if (this.hasEmptyFields()) {
+      if (!this.hasEmptyFields()) {
         this.printMessage("Please fill out all the fields.", "error");
         return;
       }
-      const headers = { "Content-Type": "application/json" };
-      axios.post(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers.json?auth=${this.getToken()}`, this.driver,
-        { headers })
+      if (this.user.password !== this.confirmPassword) {
+        this.printMessage("Password and confirm password don't match!", "error");
+        return;
+      }
+      const headers = { "Content-type": "application/json" };
+      axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.$store.state.webApiKey}`,
+        this.user, { headers })
         .then((res) => {
           if (res.status == 200) {
-            this.printMessage("Driver added succesfully.", "success");
-            this.driver = {
-              firstname: '',
-              lastname: '',
-              country: '',
-              team: ''
-            };
+            this.$router.push('/login');
           } else {
-            this.printMessage("Driver add failed.", "error");
+            this.printMessage("Registration failed.", "error");
           }
         })
         .catch((err) => {
-          this.printMessage("Driver add failed.", "error");
+          this.printMessage("Registration failed.", "error");
           console.log(err.message);
         });
     },
     hasEmptyFields() {
-      return Object.keys(this.driver).length !== 0;
+      return this.user.email !== 0 && this.user.password !== 0 && this.confirmPassword !== 0;
     },
     printMessage(message, nameOfClass) {
       this.$refs.alert.innerHTML = message;
       this.$refs.alert.className = nameOfClass;
-    },
-    getToken(){
-      return localStorage.getItem('f1User');
     }
   }
 }
 </script>
 
 <style scoped>
-h1, h2 {
+h1 {
   text-align: center;
 }
 .success,
@@ -135,14 +125,5 @@ button {
 }
 .add-button:active {
   background: #004e45;
-}
-.cancel-button {
-  background: #9b9b9b;
-}
-.cancel-button:hover {
-  background: #afafaf;
-}
-.cancel-button:active {
-  background: #6d6d6d;
 }
 </style>

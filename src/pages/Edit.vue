@@ -1,7 +1,7 @@
 <template>
   <h1>Edit Driver</h1>
   <div ref="alert"></div>
-  <form @submit.prevent>
+  <form @submit.prevent v-if="$store.getters.isLoggedIn">
     <div class="form-group">
       <input type="text" v-model="driver.firstname" placeholder="First Name" required />
     </div>
@@ -19,6 +19,7 @@
       <button @click="$router.push('/drivers')" class="cancel-button">Cancel</button>
     </div>
   </form>
+  <h2 v-if="!$store.getters.isLoggedIn">You need to be logged in to edit the data!</h2>
 </template>
 
 <script>
@@ -45,7 +46,7 @@ export default {
       }
       const id = this.$route.params.id;
       const headers = { "Content-Type": "application/json" };
-      axios.put(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers/${id}.json`, this.driver,
+      axios.put(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers/${id}.json?auth=${this.getToken()}`, this.driver,
         { headers })
         .then((res) => {
           if (res.status == 200) {
@@ -65,11 +66,14 @@ export default {
     printMessage(message, nameOfClass) {
       this.$refs.alert.innerHTML = message;
       this.$refs.alert.className = nameOfClass;
+    },
+    getToken() {
+      return localStorage.getItem('f1User');
     }
   },
   created() {
     const id = this.$route.params.id;
-    axios.get(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers/${id}.json/`)
+    axios.get(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers/${id}.json?auth=${this.getToken()}`)
       .then((res) => {
         this.driver = res.data;
       })
@@ -81,7 +85,7 @@ export default {
 </script>
 
 <style scoped>
-h1 {
+h1, h2 {
   text-align: center;
 }
 .success,

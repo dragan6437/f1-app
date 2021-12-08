@@ -1,6 +1,6 @@
 <template>
   <h2>F1 Teams</h2>
-  <div class="table-container">
+  <div class="table-container" v-if="$store.getters.isLoggedIn">
     <table>
       <thead>
         <tr>
@@ -18,6 +18,7 @@
       </tbody>
     </table>
   </div>
+  <h2 v-if="!$store.getters.isLoggedIn">You need to be logged in to see the data!</h2>
 </template>
 
 <script>
@@ -32,13 +33,16 @@ export default {
   },
   methods: {
     getTeams() {
-      axios.get('https://my-api-3de30-default-rtdb.firebaseio.com/teams.json')
+      axios.get(`https://my-api-3de30-default-rtdb.firebaseio.com/teams.json?auth=${this.getToken()}`)
         .then((res) => {
           this.$store.commit('setTeams', res.data);
         })
         .catch((err) => {
           console.log(err.message);
         })
+    },
+    getToken() {
+      return localStorage.getItem('f1User');
     }
   },
   created() {

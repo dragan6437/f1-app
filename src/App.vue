@@ -1,6 +1,17 @@
-<script setup>
+<script>
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
+
+export default {
+  mounted(){
+    this.$store.commit('loginUser', localStorage.getItem('f1User'));
+  },
+  components:{
+    Header,
+    Footer
+  }
+}
+
 </script>
 
 <template>
@@ -14,7 +25,7 @@ import Footer from './components/Footer.vue';
 </template>
 
 <style>
-body{
+body {
   margin: 0;
   font-family: "Jost", sans-serif;
 }

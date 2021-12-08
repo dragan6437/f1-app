@@ -1,7 +1,7 @@
 <template>
   <h2>F1 Drivers</h2>
   <div ref="alert"></div>
-  <div class="table-container">
+  <div class="table-container" v-if="$store.getters.isLoggedIn">
     <table>
       <thead>
         <tr>
@@ -27,6 +27,7 @@
     </table>
     <button @click="$router.push('/drivers/add')">Add Driver</button>
   </div>
+  <h2 v-if="!$store.getters.isLoggedIn">You need to be logged in to see the data!</h2>
 </template>
 
 <script>
@@ -41,7 +42,7 @@ export default {
   },
   methods: {
     getDrivers() {
-      axios.get('https://my-api-3de30-default-rtdb.firebaseio.com/drivers.json')
+      axios.get(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers.json?auth=${this.getToken()}`)
         .then((res) => {
           this.$store.commit('setDrivers', res.data);
         })
@@ -51,7 +52,7 @@ export default {
     },
     deleteDriver(id) {
       this.deleted = false;
-      axios.delete(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers/${id}.json`)
+      axios.delete(`https://my-api-3de30-default-rtdb.firebaseio.com/drivers/${id}.json?auth=${this.getToken()}`)
         .then((res) => {
           if (res.status == 200) {
             this.getDrivers();
@@ -68,6 +69,9 @@ export default {
     printMessage(message, nameOfClass) {
       this.$refs.alert.innerHTML = message;
       this.$refs.alert.className = nameOfClass;
+    },
+    getToken() {
+      return localStorage.getItem('f1User');
     }
   },
   created() {
