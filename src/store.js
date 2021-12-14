@@ -6,7 +6,7 @@ export const store = createStore({
       loggedUser: null,
       drivers: [],
       teams: [],
-      webApiKey: 'AIzaSyAiPyGOvaZh0R5m8feWSZh93bcQWHbzElg'
+      webApiKey: null
     };
   },
   mutations: {
@@ -21,6 +21,9 @@ export const store = createStore({
     },
     setTeams(state, payload) {
       state.teams = payload;
+    },
+    setWebApiKey(state, payload){
+      state.webApiKey = payload;
     }
   },
   getters: {

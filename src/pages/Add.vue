@@ -65,13 +65,20 @@ export default {
         });
     },
     hasEmptyFields() {
-      return Object.keys(this.driver).length !== 0;
+      if (this.driver.firstname === '' ||
+        this.driver.lastname === '' ||
+        this.driver.country === '' ||
+        this.driver.team === '') {
+        return true;
+      }
+
+      return false;
     },
     printMessage(message, nameOfClass) {
       this.$refs.alert.innerHTML = message;
       this.$refs.alert.className = nameOfClass;
     },
-    getToken(){
+    getToken() {
       return localStorage.getItem('f1User');
     }
   }
@@ -79,7 +86,8 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
+h1,
+h2 {
   text-align: center;
 }
 .success,

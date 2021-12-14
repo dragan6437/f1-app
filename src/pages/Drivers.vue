@@ -1,5 +1,5 @@
 <template>
-  <h2>F1 Drivers</h2>
+  <h1>F1 Drivers</h1>
   <div ref="alert"></div>
   <div class="table-container" v-if="$store.getters.isLoggedIn">
     <table>
@@ -81,7 +81,7 @@ export default {
 </script>
 
 <style scoped>
-h2 {
+h1, h2 {
   text-align: center;
 }
 .success,

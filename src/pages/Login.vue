@@ -12,6 +12,7 @@
       <button @click="sendForm()" class="add-button">Login</button>
     </div>
   </form>
+  <p class="footer-message">Don't have an account? Register <a href="#" @click="$router.push('./register')">here</a></p>
 </template>
 
 <script>
@@ -120,5 +121,9 @@ button {
 }
 .add-button:active {
   background: #004e45;
+}
+
+p.footer-message{
+  text-align: center;
 }
 </style>
